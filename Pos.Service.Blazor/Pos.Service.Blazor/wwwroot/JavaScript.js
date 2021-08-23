@@ -11,9 +11,6 @@ function InjectNewButtons() {
 }
 
 function CreateRender() {
-    var base = document.createElement("base");
-    base.src = "https://localhost:5001";
-    document.head.appendChild(base);
     var parentDiv = document.createElement('div');
     parentDiv.setAttribute = "BLAZOR";
     var app = document.createElement('div');
