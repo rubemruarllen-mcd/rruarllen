@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<npsharp type="Contract" id="NpSharp.Contracts.ScreenDb" version="26.0.1.6810">
+  <contract of="NpSharp.Plugin.ScreenDb" />
+</npsharp>

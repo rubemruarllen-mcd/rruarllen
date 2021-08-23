@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<npsharp type="Contract" id="NpSharp.Contracts.Pos" version="30.0.0.9237">
+  <contract of="NpSharp.Plugin.Pos" />
+</npsharp>

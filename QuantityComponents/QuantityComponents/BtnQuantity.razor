@@ -1,0 +1,19 @@
+﻿<button id="@Id" class="quantity" style="background-color: @Color; color:@TextColor; height: 100px;  width: 100px; " @onclick=" Change">@Name</button>
+
+@code {
+    [Parameter]
+    public string Name { get; set; } = "none";
+    [Parameter]
+    public string Id { get; set; } = "none";
+    [Parameter]
+    public string Color { get; set; } = "#4CAF50";
+    [Parameter]
+    public string TextColor { get; set; }
+
+    public void Change()
+    {
+        Name = "Quantity";
+        Color = "#800000";
+        TextColor = "white";
+    }
+}

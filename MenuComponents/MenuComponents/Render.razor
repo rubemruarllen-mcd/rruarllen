@@ -1,0 +1,60 @@
+﻿@using Newtonsoft.Json;
+@inject IJSRuntime JsRuntime;
+@using System.IO;
+@using System.Reflection;
+@using System.Text;
+@using System.Threading.Tasks;
+
+@foreach (var component in _components)
+{
+    @component
+}
+
+@code {
+
+    readonly List<RenderFragment> _components = new List<RenderFragment>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await AddJavaScript();
+            var components = await JsRuntime.InvokeAsync<string>("GetRequestMenu", "https://localhost:5001/api/v1/Components/GetMenuComponents");
+            var componentsJObj = JsonConvert.DeserializeObject<MenuRazor>(components);
+
+            foreach (ComponentParameter component in componentsJObj.ComponentParameters)
+            {
+                AddNewCompent(component);
+            }
+
+            await JsRuntime.InvokeVoidAsync("ReplaceUIbyMenu", componentsJObj);
+        };
+
+    }
+
+    public async Task AddJavaScript()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var str = assembly.GetManifestResourceStream("MenuComponents.wwwroot.MenuReplaceUI.js");
+        var sr = new StreamReader(str, Encoding.ASCII);
+        await JsRuntime.InvokeVoidAsync("eval", sr.ReadToEnd());
+
+    }
+
+    public void AddNewCompent(ComponentParameter component)
+    {
+        _components.Add((builder) =>
+        {
+
+            builder.OpenComponent(0, typeof(BtnMenu));
+            builder.AddAttribute(1, component.ParameterName, component.ParameterValue);
+            builder.AddAttribute(1, "Id", component.Id);
+            if (component.ParameterColor != null)
+            {
+                builder.AddAttribute(1, "Color", component.ParameterColor);
+            }
+            builder.CloseComponent();
+        });
+        StateHasChanged();
+    }
+}

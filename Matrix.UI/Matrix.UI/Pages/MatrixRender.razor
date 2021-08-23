@@ -1,0 +1,51 @@
+﻿@inject IJSRuntime JsRuntime;
+
+
+@foreach (var component in _components)
+{
+    @component
+}
+
+@code {
+    readonly List<RenderFragment> _components = new List<RenderFragment>();
+
+    /// <summary>
+    /// This method is responsible for coordinating the components to be rendered
+    /// </summary>
+    [JSInvokable]
+    public void RenderFragments()
+    {
+        _components.Add((builder) =>
+        {
+            builder.OpenComponent(0, typeof(MenuComponents.Render));
+            builder.CloseComponent();
+        });
+        _components.Add((builder) =>
+        {
+            builder.OpenComponent(0, typeof(QuantityComponents.Render));
+            builder.CloseComponent();
+        });
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// After the first rendering this method sends a DotNet reference to JavaScript.
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("SetDotnetRef", DotNetObjectReference.Create(this));
+            }
+            catch
+            {
+                await JsRuntime.InvokeVoidAsync("console.log", "Reference cannot be set");
+                RenderFragments();
+            }
+        }
+    }
+}
